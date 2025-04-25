@@ -28,3 +28,13 @@ export interface Prediction {
     win: number | null;
     created_at: Timestamptz;
 }
+
+export interface User {
+    userid: string;
+    biggest_win: string | null;
+    biggest_prediction: string | null;
+    biggest_loss: string | null;
+    awaiting_market_approval: boolean;
+    balance: number;
+    created_at: Timestamptz;
+}
