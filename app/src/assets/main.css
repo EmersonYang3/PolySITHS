@@ -4,6 +4,8 @@
     --color-*: initial;
     
     /* Core Colors */
+    --color-pure-black: #000000;
+    --color-pure-white: #FFFFFF;
     --color-black: #0F0F0F;
     --color-off-black: #121212;
     --color-soft-black: #1E1E1E;
