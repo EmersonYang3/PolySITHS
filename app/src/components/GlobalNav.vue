@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
+import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 
@@ -46,6 +47,9 @@ function handleSignUp() {
 }
 
 function handleLogout() {
-  router.push('/')
+  supabase.auth.signOut().then(() => {
+    userStore.isLoggedIn = false
+    router.push('/')
+  })
 }
 </script>
