@@ -12,6 +12,9 @@
           class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
           required
         />
+        <p v-if="email && !isEmailValid" class="mt-1 text-sm text-error">
+          Email must include an @!
+        </p>
       </div>
 
       <div class="mb-4">
@@ -48,7 +51,7 @@
 
       <button
         type="submit"
-        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all enabled:active:scale-95"
         :disabled="!isFormValid"
       >
         Sign Up
@@ -72,9 +75,13 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 
+// Validation
+const isEmailValid = computed(() => email.value.includes('@'))
 const isPasswordValid = computed(() => password.value.length >= 6)
 const doPasswordsMatch = computed(() => password.value === confirmPassword.value)
-const isFormValid = computed(() => isPasswordValid.value && doPasswordsMatch.value && email.value)
+const isFormValid = computed(
+  () => isEmailValid.value && isPasswordValid.value && doPasswordsMatch.value && email.value,
+)
 
 const onSubmit = () => {
   console.log('Form submitted:', {

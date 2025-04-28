@@ -12,6 +12,9 @@
           class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
           required
         />
+        <p v-if="email && !isEmailValid" class="mt-1 text-sm text-error">
+          Email must include an @!
+        </p>
       </div>
 
       <div class="mb-4">
@@ -42,7 +45,7 @@
 
       <button
         type="submit"
-        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="!isFormValid"
       >
         Log In
@@ -68,7 +71,8 @@ const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 
-const isFormValid = computed(() => email.value && password.value)
+const isEmailValid = computed(() => email.value.includes('@'))
+const isFormValid = computed(() => isEmailValid.value && email.value && password.value)
 
 const onSubmit = () => {
   console.log('Login submitted:', {
