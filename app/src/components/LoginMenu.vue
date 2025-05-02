@@ -30,6 +30,7 @@
         />
       </div>
 
+      <!-- TODO: Add remember me checkbox and forgot password functionality (later)
       <div class="mb-4 flex items-center">
         <input
           type="checkbox"
@@ -42,15 +43,23 @@
           Forgot password?
         </a>
       </div>
+      -->
 
       <button
         type="submit"
         class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="!isFormValid"
+        :disabled="!isFormValid || isLoading"
+        :class="{ 'opacity-70': isLoading }"
       >
-        Log In
+        <span v-if="isLoading">Logging in...</span>
+        <span v-else>Log In</span>
       </button>
     </form>
+
+    <p v-if="isSuccess" class="text-center mt-1 text-sm text-success">Login successful!</p>
+    <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">
+      {{ errorMessage }}
+    </p>
 
     <div class="mt-4 flex gap-1 text-text-primary">
       <p>Don't have an account?</p>
@@ -66,19 +75,40 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { supabase } from '@/lib/supabaseClient'
 
 const email = ref('')
 const password = ref('')
-const rememberMe = ref(false)
+const isLoading = ref(false)
+const errorMessage = ref('')
+const isSuccess = ref(false)
 
 const isEmailValid = computed(() => email.value.includes('@'))
-const isFormValid = computed(() => isEmailValid.value && email.value && password.value)
+const isFormValid = computed(() => isEmailValid.value && password.value)
 
-const onSubmit = () => {
-  console.log('Login submitted:', {
+const router = useRouter()
+const userStore = useUserStore()
+
+const onSubmit = async () => {
+  errorMessage.value = ''
+  isSuccess.value = false
+  isLoading.value = true
+
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
-    rememberMe: rememberMe.value,
   })
+
+  isLoading.value = false
+
+  if (error) {
+    errorMessage.value = error.message
+  } else {
+    isSuccess.value = true
+    userStore.isLoggedIn = true
+    router.push({ name: 'dashboard' })
+  }
 }
 </script>

@@ -53,9 +53,17 @@
         type="submit"
         class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all enabled:active:scale-95"
         :disabled="!isFormValid"
+        :class="{ 'opacity-70': isLoading }"
       >
-        Sign Up
+        <span v-if="isLoading">Signing up...</span>
+        <span v-else>Sign Up</span>
       </button>
+
+      <p v-if="isSuccess" class="text-center mt-1 text-sm text-success">
+        A email has been sent to your email address. Please check your inbox to confirm your
+        account.
+      </p>
+      <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">{{ errorMessage }}</p>
     </form>
 
     <div class="mt-4 flex gap-1 text-text-primary">
@@ -66,16 +74,18 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
+import { supabase } from '@/lib/supabaseClient'
 import { ref, computed } from 'vue'
 
-// Form state
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 
-// Validation
+const isSuccess = ref(false)
+const errorMessage = ref('')
+const isLoading = ref(false)
+
 const isEmailValid = computed(() => email.value.includes('@'))
 const isPasswordValid = computed(() => password.value.length >= 6)
 const doPasswordsMatch = computed(() => password.value === confirmPassword.value)
@@ -83,10 +93,23 @@ const isFormValid = computed(
   () => isEmailValid.value && isPasswordValid.value && doPasswordsMatch.value && email.value,
 )
 
-const onSubmit = () => {
-  console.log('Form submitted:', {
+const onSubmit = async () => {
+  errorMessage.value = ''
+  isSuccess.value = false
+  isLoading.value = true
+
+  const { data, error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
   })
+
+  isLoading.value = false
+
+  if (!error) {
+    isSuccess.value = true
+  } else {
+    isSuccess.value = false
+    errorMessage.value = error.message
+  }
 }
 </script>

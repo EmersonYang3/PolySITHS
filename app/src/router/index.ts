@@ -1,46 +1,51 @@
+// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
-import HomeView from '../views/HomeView.vue'
-import LogInView from '@/views/LogInView.vue'
-import SignupView from '@/views/SignupView.vue'
+import { authGuard } from './authGuard'
 
-import { useUserStore } from '@/stores/user'
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('@/views/HomeView.vue'),
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/LogInView.vue'),
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('@/views/SignupView.vue'),
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/DashBoard.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/views/ProfileView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: { name: 'home' },
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-      meta: { guestOnly: true }
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: LogInView,
-      meta: { guestOnly: true }
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignupView,
-      meta: { guestOnly: true }
-    }
-  ],
+  routes,
 })
 
-router.beforeEach((to, from, next) => {
-  const isLoggedIn = useUserStore().isLoggedIn
-  const guestOnly = to.meta.guestOnly
-
-  if (guestOnly && isLoggedIn) {
-    return next(false)
-  } else if (!guestOnly && !isLoggedIn) {
-    return next({ name: 'login' })
-  } else {
-    return next()
-  }
-})
+router.beforeEach(authGuard)
 
 export default router
