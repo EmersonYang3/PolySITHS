@@ -20,7 +20,7 @@
 
       <div v-else class="relative" ref="profileDropdown">
         <button
-          @click="isDropdownOpen = !isDropdownOpen"
+          @click="toggleDropdown"
           class="flex h-9 w-9 items-center justify-center rounded-full border border-border-light bg-soft-black text-white hover:border-purple cursor-pointer transition-all"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
@@ -54,6 +54,20 @@
               Profile
             </button>
             <button
+              @click="handleMarkets"
+              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+              role="menuitem"
+            >
+              Markets
+            </button>
+            <button
+              @click="handleLeaderboards"
+              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+              role="menuitem"
+            >
+              Leaderboards
+            </button>
+            <button
               @click="handleLogout"
               class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black cursor-pointer hover:text-error transition-colors"
               role="menuitem"
@@ -68,8 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue'
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { supabase } from '@/lib/supabaseClient'
@@ -80,7 +93,7 @@ const router = useRouter()
 const isDropdownOpen = ref<boolean>(false)
 const isLoggedIn = computed<boolean>(() => userStore.isLoggedIn)
 
-const profileDropdown: Ref<HTMLElement | null> = ref(null)
+const profileDropdown = ref<HTMLElement | null>(null)
 
 function handleClickOutside(event: MouseEvent): void {
   if (
@@ -100,6 +113,10 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
+function toggleDropdown(): void {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
+
 function handleLogin(): void {
   router.push({ name: 'login' })
 }
@@ -113,6 +130,16 @@ function handleProfile(): void {
   isDropdownOpen.value = false
 }
 
+function handleMarkets(): void {
+  router.push({ name: 'markets' })
+  isDropdownOpen.value = false
+}
+
+function handleLeaderboards(): void {
+  router.push({ name: 'leaderboards' })
+  isDropdownOpen.value = false
+}
+
 async function handleLogout(): Promise<void> {
   const { error } = await supabase.auth.signOut()
 
@@ -120,8 +147,9 @@ async function handleLogout(): Promise<void> {
     console.error('Logout error:', error.message)
     return
   }
-  
+
   userStore.isLoggedIn = false
   router.push({ name: 'login' })
+  isDropdownOpen.value = false
 }
 </script>

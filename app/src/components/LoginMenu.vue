@@ -108,7 +108,7 @@ const onSubmit = async () => {
   } else {
     isSuccess.value = true
     userStore.isLoggedIn = true
-    router.push({ name: 'dashboard' })
+    router.push({ name: 'markets' })
   }
 }
 </script>

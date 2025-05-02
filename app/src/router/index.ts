@@ -1,4 +1,3 @@
-// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
@@ -24,15 +23,21 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresGuest: true },
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import('@/views/DashBoard.vue'),
+    path: '/markets',
+    name: 'markets',
+    component: () => import('@/views/MarketsView.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/profile',
     name: 'profile',
     component: () => import('@/views/ProfileView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/leaderboards',
+    name: 'leaderboards',
+    component: () => import('@/views/LeaderboardsView.vue'),
     meta: { requiresAuth: true },
   },
   {
