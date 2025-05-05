@@ -21,13 +21,24 @@
         <label for="password" class="mb-2 block text-sm font-medium text-purple-light">
           Password:
         </label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
-          required
-        />
+        <div class="relative">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            v-model="password"
+            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
+            required
+          />
+          <button
+            type="button"
+            @click="togglePasswordVisibility"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-purple-light focus:outline-none"
+            aria-label="Toggle password visibility"
+          >
+            <Eye v-if="!showPassword" class="h-5 w-5 cursor-pointer" />
+            <EyeOff v-else class="h-5 w-5 cursor-pointer" />
+          </button>
+        </div>
         <p v-if="password && !isPasswordValid" class="mt-1 text-sm text-error">
           Password must be at least 6 characters!
         </p>
@@ -37,13 +48,24 @@
         <label for="confirmPassword" class="mb-2 block text-sm font-medium text-purple-light">
           Confirm Password:
         </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          v-model="confirmPassword"
-          class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
-          required
-        />
+        <div class="relative">
+          <input
+            :type="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            v-model="confirmPassword"
+            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
+            required
+          />
+          <button
+            type="button"
+            @click="toggleConfirmPasswordVisibility"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-purple-light focus:outline-none"
+            aria-label="Toggle confirm password visibility"
+          >
+            <Eye v-if="!showConfirmPassword" class="h-5 w-5 cursor-pointer" />
+            <EyeOff v-else class="h-5 w-5 cursor-pointer" />
+          </button>
+        </div>
         <p v-if="confirmPassword && !doPasswordsMatch" class="mt-1 text-sm text-error">
           Confirm password must be the same as password!
         </p>
@@ -77,10 +99,13 @@
 <script setup lang="ts">
 import { supabase } from '@/lib/supabaseClient'
 import { ref, computed } from 'vue'
+import { Eye, EyeOff } from 'lucide-vue-next'
 
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const isSuccess = ref(false)
 const errorMessage = ref('')
@@ -92,6 +117,14 @@ const doPasswordsMatch = computed(() => password.value === confirmPassword.value
 const isFormValid = computed(
   () => isEmailValid.value && isPasswordValid.value && doPasswordsMatch.value && email.value,
 )
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
+
+const toggleConfirmPasswordVisibility = () => {
+  showConfirmPassword.value = !showConfirmPassword.value
+}
 
 const onSubmit = async () => {
   errorMessage.value = ''

@@ -48,30 +48,34 @@
           <div class="py-1" role="none">
             <button
               @click="handleProfile"
-              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+              class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
               role="menuitem"
             >
+              <User class="h-4 w-4" />
               Profile
             </button>
             <button
               @click="handleMarkets"
-              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+              class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
               role="menuitem"
             >
+              <BarChart3 class="h-4 w-4" />
               Markets
             </button>
             <button
               @click="handleLeaderboards"
-              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+              class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
               role="menuitem"
             >
+              <Trophy class="h-4 w-4" />
               Leaderboards
             </button>
             <button
               @click="handleLogout"
-              class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-black cursor-pointer hover:text-error transition-colors"
+              class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black cursor-pointer hover:text-error transition-colors"
               role="menuitem"
             >
+              <LogOut class="h-4 w-4" />
               Sign out
             </button>
           </div>
@@ -86,6 +90,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { supabase } from '@/lib/supabaseClient'
+import { User, BarChart3, Trophy, LogOut } from 'lucide-vue-next'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -94,6 +99,11 @@ const isDropdownOpen = ref<boolean>(false)
 const isLoggedIn = computed<boolean>(() => userStore.isLoggedIn)
 
 const profileDropdown = ref<HTMLElement | null>(null)
+
+const buttonClasses =
+  'h-9 rounded border border-border-light bg-soft-black px-3 text-sm font-medium text-text-primary hover:bg-soft-black hover:text-purple-light sm:px-4 cursor-pointer transition-all'
+const signupButtonClasses =
+  'h-9 rounded bg-purple px-3 text-sm font-medium text-black hover:bg-purple-dark sm:px-4 cursor-pointer transition-all'
 
 function handleClickOutside(event: MouseEvent): void {
   if (

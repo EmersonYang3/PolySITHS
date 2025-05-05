@@ -21,13 +21,24 @@
         <label for="password" class="mb-2 block text-sm font-medium text-purple-light">
           Password:
         </label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
-          required
-        />
+        <div class="relative">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            v-model="password"
+            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
+            required
+          />
+          <button
+            type="button"
+            @click="togglePasswordVisibility"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-purple-light focus:outline-none"
+            aria-label="Toggle password visibility"
+          >
+            <Eye v-if="!showPassword" class="h-5 w-5 cursor-pointer" />
+            <EyeOff v-else class="h-5 w-5 cursor-pointer" />
+          </button>
+        </div>
       </div>
 
       <!-- TODO: Add remember me checkbox and forgot password functionality (later)
@@ -78,18 +89,24 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { supabase } from '@/lib/supabaseClient'
+import { Eye, EyeOff } from 'lucide-vue-next'
+
+const router = useRouter()
+const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 const isSuccess = ref(false)
+const showPassword = ref(false)
 
 const isEmailValid = computed(() => email.value.includes('@'))
 const isFormValid = computed(() => isEmailValid.value && password.value)
 
-const router = useRouter()
-const userStore = useUserStore()
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
 
 const onSubmit = async () => {
   errorMessage.value = ''
