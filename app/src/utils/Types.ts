@@ -29,7 +29,7 @@ export interface Prediction {
     created_at: Timestamptz;
 }
 
-export interface User {
+export interface UserData {
     userid: string;
     biggest_win: string | null;
     biggest_prediction: string | null;

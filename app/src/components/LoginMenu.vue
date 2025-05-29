@@ -86,18 +86,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { supabase } from '@/lib/supabaseClient'
 import { Eye, EyeOff } from 'lucide-vue-next'
 
-const router = useRouter()
 const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
-const isLoading = ref(false)
 const errorMessage = ref('')
+
+const isLoading = ref(false)
 const isSuccess = ref(false)
 const showPassword = ref(false)
 
@@ -113,19 +111,15 @@ const onSubmit = async () => {
   isSuccess.value = false
   isLoading.value = true
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value,
-  })
+  const data = await userStore.logInUser(email.value, password.value)
 
   isLoading.value = false
 
-  if (error) {
-    errorMessage.value = error.message
-  } else {
-    isSuccess.value = true
-    userStore.isLoggedIn = true
-    router.push({ name: 'markets' })
+  if (!data.success) {
+    errorMessage.value = data.error
+    return
   }
+
+  isSuccess.value = true
 }
 </script>

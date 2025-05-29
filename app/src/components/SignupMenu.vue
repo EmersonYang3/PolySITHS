@@ -96,10 +96,13 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { supabase } from '@/lib/supabaseClient'
+import { useUserStore } from '@/stores/user'
 import { ref, computed } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
+
+const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
@@ -131,18 +134,15 @@ const onSubmit = async () => {
   isSuccess.value = false
   isLoading.value = true
 
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value,
-    password: password.value,
-  })
+  const data = await userStore.signUpUser(email.value, password.value)
 
   isLoading.value = false
 
-  if (!error) {
+  if (data.success) {
     isSuccess.value = true
   } else {
     isSuccess.value = false
-    errorMessage.value = error.message
+    errorMessage.value = data.error
   }
 }
 </script>

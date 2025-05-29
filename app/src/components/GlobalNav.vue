@@ -1,6 +1,8 @@
 <template>
   <nav class="sticky flex h-16 items-center justify-between border-b border-white p-4">
-    <h1 class="text-2xl font-bold text-white">POLYSITHS</h1>
+    <button class="text-2xl font-bold text-white cursor-pointer" @click="handleMenu">
+      POLYSITHS
+    </button>
 
     <div class="flex items-center gap-2 sm:gap-4">
       <template v-if="!isLoggedIn">
@@ -89,7 +91,6 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { supabase } from '@/lib/supabaseClient'
 import { User, BarChart3, Trophy, LogOut } from 'lucide-vue-next'
 
 const userStore = useUserStore()
@@ -99,11 +100,6 @@ const isDropdownOpen = ref<boolean>(false)
 const isLoggedIn = computed<boolean>(() => userStore.isLoggedIn)
 
 const profileDropdown = ref<HTMLElement | null>(null)
-
-const buttonClasses =
-  'h-9 rounded border border-border-light bg-soft-black px-3 text-sm font-medium text-text-primary hover:bg-soft-black hover:text-purple-light sm:px-4 cursor-pointer transition-all'
-const signupButtonClasses =
-  'h-9 rounded bg-purple px-3 text-sm font-medium text-black hover:bg-purple-dark sm:px-4 cursor-pointer transition-all'
 
 function handleClickOutside(event: MouseEvent): void {
   if (
@@ -125,6 +121,10 @@ onBeforeUnmount(() => {
 
 function toggleDropdown(): void {
   isDropdownOpen.value = !isDropdownOpen.value
+}
+
+function handleMenu(): void {
+  router.push({ name: 'home' })
 }
 
 function handleLogin(): void {
@@ -150,16 +150,8 @@ function handleLeaderboards(): void {
   isDropdownOpen.value = false
 }
 
-async function handleLogout(): Promise<void> {
-  const { error } = await supabase.auth.signOut()
-
-  if (error) {
-    console.error('Logout error:', error.message)
-    return
-  }
-
-  userStore.isLoggedIn = false
-  router.push({ name: 'login' })
+async function handleLogout() {
+  await userStore.logOutUser()
   isDropdownOpen.value = false
 }
 </script>
