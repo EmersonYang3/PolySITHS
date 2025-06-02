@@ -1,4 +1,5 @@
 export type Timestamptz = string;
+export type OptionKey = 'Option1' | 'Option2';
 
 export interface Review {
     Reviewer: string;
@@ -9,11 +10,15 @@ export interface Review {
 
 export interface Market {
     marketid: string;
-    title: string; 
+    title: string;
+    question: string;
     creator: string;
-    resolver: string; 
-    options: { [Option: number]: string }; 
-    shares: { [UserID: string]: { [Option: number]: number } }; 
+    resolver: string;
+    options: Record<OptionKey, string>;
+    shares: Record<OptionKey, Array<{
+        UserId: string;
+        BoughtValue: number;
+    }>>;
     history: { [TimeStamp: Timestamptz]: { [Option: number]: number } };
     projected_end: Timestamptz;
     created_at: Timestamptz;
