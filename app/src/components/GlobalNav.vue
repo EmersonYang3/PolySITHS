@@ -134,7 +134,7 @@ function animateBalance(): void {
 
   gsap.to(counterObj, {
     value: targetBalance,
-    duration: 3,
+    duration: 5,
     ease: 'power2.out',
     onUpdate: () => {
       if (balanceCounter.value) {
