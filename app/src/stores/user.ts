@@ -5,65 +5,89 @@ import { supabase } from '@/lib/supabaseClient'
 
 import type { User } from '@supabase/supabase-js'
 import type { UserData } from '@/utils/Types'
+import type { RealtimeChannel } from '@supabase/supabase-js'
 
 export const useUserStore = defineStore('user', () => {
-    const user = ref<User | null>(null)
-    const userData = ref<UserData | null>(null)
-    const isLoggedIn = ref(false)
+  const user = ref<User | null>(null)
+  const userData = ref<UserData | null>(null)
+  const isLoggedIn = ref(false)
 
-    const router = useRouter()
+  let userDataChannel: RealtimeChannel | null = null
 
-    async function signUpUser(email: string, password: string) {
-        const { data, error } = await supabase.auth.signUp({ email: email, password: password })
+  const router = useRouter()
 
-        if (error) { return { success: false, error: error.message} }
-    
-        return { success: true, error: "" }
+  async function signUpUser(email: string, password: string) {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      return { success: false, error: error.message }
+    }
+    return { success: true, error: '' }
+  }
+
+  async function logInUser(email: string, password: string) {
+    const { data: logInData, error: logInError } =
+      await supabase.auth.signInWithPassword({ email, password })
+
+    if (logInError) {
+      return { success: false, error: logInError.message }
     }
 
-    async function logInUser(email: string, password: string) {
-        const { data: logInData, error: logInError } = await supabase.auth.signInWithPassword({ email: email, password: password })
+    user.value = logInData.user
+    isLoggedIn.value = true
 
-        if (logInError) { return { success: false, error: logInError.message } }
+    const { data: userDataReturn, error: userDataError } = await supabase
+      .from('UsersData')
+      .select('*')
+      .eq('userid', user.value!.id)
+      .single()
 
-        user.value = logInData.user
-        isLoggedIn.value = true
-
-        const { data: userDataReturn, error: userDataError} = await supabase.from('UsersData').select().eq('userid', user.value?.id).single()
-        
-        if (!user.value) { return { success: false, error: "User not found" } }
-        if (userDataError) { return { success: false, error: userDataError.message } }
-
-        userData.value = userDataReturn as UserData 
-        router.push('/markets')
-
-        return { success: true, error: "" }
+    if (!user.value) {
+      return { success: false, error: 'User not found' }
+    }
+    if (userDataError) {
+      return { success: false, error: userDataError.message }
     }
 
-    async function logOutUser() {
-        const { error } = await supabase.auth.signOut()
+    userData.value = userDataReturn as UserData
 
-        if (error) { return { success: false, error: error.message } }
+    userDataChannel = supabase
+      .channel(`public:UsersData:userid=eq.${user.value.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'UsersData',
+          filter: `userid=eq.${user.value.id}`,
+        },
+        (payload) => {
+          userData.value = payload.new as UserData
+        }
+      )
+      .subscribe()
 
-        user.value = null
-        userData.value = null
-        
-        isLoggedIn.value = false
+    router.push('/markets')
+    return { success: true, error: '' }
+  }
 
-        router.push('/login')
-        return { success: true, error: "" }
+  async function logOutUser() {
+    if (userDataChannel) {
+      await supabase.removeChannel(userDataChannel)
+      userDataChannel = null
     }
 
-    async function refreshUserData() {
-        const { data: userDataReturn, error: userDataError} = await supabase.from('UsersData').select().eq('userid', user.value?.id).single()
-        
-        if (!user.value) { return { success: false, error: "User not found" } }
-        if (userDataError) { return { success: false, error: userDataError.message } }
-
-        userData.value = userDataReturn as UserData 
-
-        return { success: true, error: "" }
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      return { success: false, error: error.message }
     }
 
-    return { user, userData, isLoggedIn, signUpUser, logInUser, logOutUser, refreshUserData }
+    user.value = null
+    userData.value = null
+    isLoggedIn.value = false
+
+    router.push('/login')
+    return { success: true, error: '' }
+  }
+
+  return { user, userData, isLoggedIn, signUpUser, logInUser, logOutUser }
 })

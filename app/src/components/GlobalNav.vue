@@ -60,14 +60,14 @@
             aria-orientation="vertical"
           >
             <div class="py-1" role="none">
-              <button
+              <!--<button
                 @click="handleProfile"
                 class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
                 role="menuitem"
               >
                 <User class="h-4 w-4" />
                 Profile
-              </button>
+              </button>-->
               <button
                 @click="handleMarkets"
                 class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
@@ -76,14 +76,14 @@
                 <BarChart3 class="h-4 w-4" />
                 Markets
               </button>
-              <button
+              <!--<button
                 @click="handleLeaderboards"
                 class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
                 role="menuitem"
               >
                 <Trophy class="h-4 w-4" />
                 Leaderboards
-              </button>
+              </button>-->
               <button
                 @click="handleLogout"
                 class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black cursor-pointer hover:text-error transition-colors"
@@ -127,10 +127,13 @@ function handleClickOutside(event: MouseEvent): void {
 }
 
 function animateBalance(): void {
-  if (!balanceCounter.value || !userStore.userData?.balance) return
+  if (!balanceCounter.value || userStore.userData?.balance === undefined) return
 
   const targetBalance = userStore.userData.balance
-  const counterObj = { value: 0 }
+  const currentText = balanceCounter.value.textContent || ''
+  const parsed = parseInt(currentText.replace(/,/g, ''), 10)
+  const startValue = isNaN(parsed) ? 0 : parsed
+  const counterObj = { value: startValue }
 
   gsap.to(counterObj, {
     value: targetBalance,
@@ -191,20 +194,20 @@ function handleSignUp(): void {
   router.push({ name: 'signup' })
 }
 
-function handleProfile(): void {
-  router.push({ name: 'profile' })
+function handleMarkets(): void {
+  router.push({ name: 'markets' })
   isDropdownOpen.value = false
 }
 
-function handleMarkets(): void {
-  router.push({ name: 'markets' })
+/*function handleProfile(): void {
+  router.push({ name: 'profile', params: { id: userStore.userData?.userid } })
   isDropdownOpen.value = false
 }
 
 function handleLeaderboards(): void {
   router.push({ name: 'leaderboards' })
   isDropdownOpen.value = false
-}
+}*/
 
 async function handleLogout() {
   await userStore.logOutUser()

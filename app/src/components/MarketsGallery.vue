@@ -7,11 +7,10 @@
 <script setup lang="ts">
 import { useMarketStore } from '@/stores/market'
 import MarketCard from './MarketCard.vue'
-import PrettyMarketsCard from './PrettyMarketsCard.vue'
 import { onMounted, computed } from 'vue'
 
 const marketStore = useMarketStore()
-const markets = computed(() => marketStore.availableMarkets)
+const markets = computed(() => marketStore.marketsWithAggregates)
 
 onMounted(async () => {
   await marketStore.refreshMarkets()

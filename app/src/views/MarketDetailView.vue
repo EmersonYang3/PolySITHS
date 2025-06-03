@@ -1,15 +1,18 @@
 <template></template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useMarketStore } from '@/stores/market'
 
 const route = useRoute()
+const marketStore = useMarketStore()
 
 onMounted(async () => {
+  console.log('WHJAT THE SIGMS')
   const id = route.params.id as string
 
-  console.log(id)
+  console.log(marketStore.selectedMarket)
 })
 
 /* const market = computed(() => marketStore.selectedMarket)

@@ -29,16 +29,24 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'profile',
     component: () => import('@/views/ProfileView.vue'),
     meta: { requiresAuth: true },
+    props: true,
   },
   {
     path: '/leaderboards',
     name: 'leaderboards',
     component: () => import('@/views/LeaderboardsView.vue'),
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/market/:id',
+    name: 'market',
+    component: () => import('@/views/MarketDetailView.vue'),
+    meta: { requiresAuth: true },
+    props: true,
   },
   {
     path: '/:catchAll(.*)',
