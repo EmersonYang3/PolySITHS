@@ -4,13 +4,13 @@
 
     <form class="text-text-primary" @submit.prevent="onSubmit">
       <div class="mb-4">
-        <label for="email" class="mb-2 block text-sm font-medium text-purple-light"> Email: </label>
+        <label for="email" class="mb-2 block text-sm font-medium text-purple-light">Email:</label>
         <input
-          type="email"
           id="email"
+          type="email"
           v-model="email"
-          class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
           required
+          class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
         />
         <p v-if="email && !isEmailValid" class="mt-1 text-sm text-error">
           Email must include an @!
@@ -18,20 +18,20 @@
       </div>
 
       <div class="mb-4">
-        <label for="password" class="mb-2 block text-sm font-medium text-purple-light">
-          Password:
-        </label>
+        <label for="password" class="mb-2 block text-sm font-medium text-purple-light"
+          >Password:</label
+        >
         <div class="relative">
           <input
             :type="showPassword ? 'text' : 'password'"
             id="password"
             v-model="password"
-            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
             required
+            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
           />
           <button
             type="button"
-            @click="togglePasswordVisibility"
+            @click="showPassword = !showPassword"
             class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-purple-light focus:outline-none"
             aria-label="Toggle password visibility"
           >
@@ -45,20 +45,20 @@
       </div>
 
       <div class="mb-4">
-        <label for="confirmPassword" class="mb-2 block text-sm font-medium text-purple-light">
-          Confirm Password:
-        </label>
+        <label for="confirmPassword" class="mb-2 block text-sm font-medium text-purple-light"
+          >Confirm Password:</label
+        >
         <div class="relative">
           <input
             :type="showConfirmPassword ? 'text' : 'password'"
             id="confirmPassword"
             v-model="confirmPassword"
-            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
             required
+            class="w-full rounded border border-border-light bg-black p-3 text-white focus:border-purple focus:outline-none"
           />
           <button
             type="button"
-            @click="toggleConfirmPasswordVisibility"
+            @click="showConfirmPassword = !showConfirmPassword"
             class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-purple-light focus:outline-none"
             aria-label="Toggle confirm password visibility"
           >
@@ -67,40 +67,39 @@
           </button>
         </div>
         <p v-if="confirmPassword && !doPasswordsMatch" class="mt-1 text-sm text-error">
-          Confirm password must be the same as password!
+          Passwords must match!
         </p>
       </div>
 
       <button
         type="submit"
-        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all enabled:active:scale-95"
-        :disabled="!isFormValid"
+        :disabled="!isFormValid || isLoading"
         :class="{ 'opacity-70': isLoading }"
+        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span v-if="isLoading">Signing up...</span>
         <span v-else>Sign Up</span>
       </button>
 
       <p v-if="isSuccess" class="text-center mt-1 text-sm text-success">
-        A email has been sent to your email address. Please check your inbox to confirm your
-        account.
+        Please check your inbox to confirm your account.
       </p>
       <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">{{ errorMessage }}</p>
     </form>
 
     <div class="mt-4 flex gap-1 text-text-primary">
       <p>Have an account?</p>
-      <router-link to="/login" class="cursor-pointer text-purple-light hover:text-purple underline">
-        Log in
-      </router-link>
+      <router-link to="/login" class="text-purple-light hover:text-purple underline"
+        >Log in</router-link
+      >
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user'
 import { ref, computed } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
+import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 
@@ -109,7 +108,6 @@ const password = ref('')
 const confirmPassword = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
-
 const isSuccess = ref(false)
 const errorMessage = ref('')
 const isLoading = ref(false)
@@ -120,14 +118,6 @@ const doPasswordsMatch = computed(() => password.value === confirmPassword.value
 const isFormValid = computed(
   () => isEmailValid.value && isPasswordValid.value && doPasswordsMatch.value && email.value,
 )
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value
-}
-
-const toggleConfirmPasswordVisibility = () => {
-  showConfirmPassword.value = !showConfirmPassword.value
-}
 
 const onSubmit = async () => {
   errorMessage.value = ''
@@ -141,7 +131,6 @@ const onSubmit = async () => {
   if (data.success) {
     isSuccess.value = true
   } else {
-    isSuccess.value = false
     errorMessage.value = data.error
   }
 }

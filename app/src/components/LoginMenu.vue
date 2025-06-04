@@ -41,21 +41,6 @@
         </div>
       </div>
 
-      <!-- TODO: Add remember me checkbox and forgot password functionality (later)
-      <div class="mb-4 flex items-center">
-        <input
-          type="checkbox"
-          id="remember"
-          v-model="rememberMe"
-          class="h-4 w-4 rounded border-border-light bg-black text-purple focus:ring-purple"
-        />
-        <label for="remember" class="ml-2 block text-sm text-text-secondary"> Remember me </label>
-        <a href="#" class="ml-auto text-sm text-purple-light hover:text-purple">
-          Forgot password?
-        </a>
-      </div>
-      -->
-
       <button
         type="submit"
         class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white cursor-pointer transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
@@ -68,9 +53,7 @@
     </form>
 
     <p v-if="isSuccess" class="text-center mt-1 text-sm text-success">Login successful!</p>
-    <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">
-      {{ errorMessage }}
-    </p>
+    <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">{{ errorMessage }}</p>
 
     <div class="mt-4 flex gap-1 text-text-primary">
       <p>Don't have an account?</p>
@@ -88,19 +71,22 @@
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Eye, EyeOff } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
-
 const isLoading = ref(false)
 const isSuccess = ref(false)
 const showPassword = ref(false)
 
 const isEmailValid = computed(() => email.value.includes('@'))
-const isFormValid = computed(() => isEmailValid.value && password.value)
+const isPasswordValid = computed(() => password.value.length > 0)
+const isFormValid = computed(() => isEmailValid.value && isPasswordValid.value)
+
+const router = useRouter()
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
@@ -111,15 +97,16 @@ const onSubmit = async () => {
   isSuccess.value = false
   isLoading.value = true
 
-  const data = await userStore.logInUser(email.value, password.value)
+  const { success, error } = await userStore.logInUser(email.value, password.value)
 
   isLoading.value = false
 
-  if (!data.success) {
-    errorMessage.value = data.error
+  if (!success) {
+    errorMessage.value = error
     return
   }
 
   isSuccess.value = true
+  router.push('/markets')
 }
 </script>

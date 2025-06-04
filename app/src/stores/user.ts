@@ -10,63 +10,45 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
   const userData = ref<UserData | null>(null)
+  const viewedUserData = ref<UserData | null>(null)
   const isLoggedIn = ref(false)
 
   let userDataChannel: RealtimeChannel | null = null
-
   const router = useRouter()
 
   async function signUpUser(email: string, password: string) {
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) {
-      return { success: false, error: error.message }
-    }
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) return { success: false, error: error.message }
     return { success: true, error: '' }
   }
 
   async function logInUser(email: string, password: string) {
-    const { data: logInData, error: logInError } =
-      await supabase.auth.signInWithPassword({ email, password })
+    const { data: logInData, error: logInError } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (logInError) {
-      return { success: false, error: logInError.message }
+    if (logInError || !logInData.user) {
+      return { success: false, error: logInError?.message || 'Login failed' }
     }
 
     user.value = logInData.user
     isLoggedIn.value = true
 
-    const { data: userDataReturn, error: userDataError } = await supabase
-      .from('UsersData')
-      .select('*')
-      .eq('userid', user.value!.id)
-      .single()
+    const { success, data, error } = await getUserDataById(user.value.id)
+    if (!success) return { success: false, error }
 
-    if (!user.value) {
-      return { success: false, error: 'User not found' }
-    }
-    if (userDataError) {
-      return { success: false, error: userDataError.message }
-    }
-
-    userData.value = userDataReturn as UserData
+    userData.value = data
 
     userDataChannel = supabase
-      .channel(`public:UsersData:userid=eq.${user.value.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'UsersData',
-          filter: `userid=eq.${user.value.id}`,
-        },
-        (payload) => {
-          userData.value = payload.new as UserData
-        }
-      )
+      .channel(`public:user_data:user_id=eq.${user.value.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'user_data',
+        filter: `user_id=eq.${user.value.id}`,
+      }, (payload) => {
+        userData.value = payload.new as UserData
+      })
       .subscribe()
 
-    router.push('/markets')
     return { success: true, error: '' }
   }
 
@@ -77,17 +59,40 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const { error } = await supabase.auth.signOut()
-    if (error) {
-      return { success: false, error: error.message }
-    }
+    if (error) return { success: false, error: error.message }
 
     user.value = null
     userData.value = null
+    viewedUserData.value = null
     isLoggedIn.value = false
 
-    router.push('/login')
     return { success: true, error: '' }
   }
 
-  return { user, userData, isLoggedIn, signUpUser, logInUser, logOutUser }
+  async function viewUserDataById(userId: string) {
+    const { success, data, error } = await getUserDataById(userId)
+
+    if (success) {
+      viewedUserData.value = data
+    }
+    
+    return { success, error }
+  }
+
+  async function getUserDataById(userId: string): Promise<{
+    success: boolean
+    data: UserData | null
+    error: string
+  }> {
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('*')
+      .eq('user_id', userId)
+      .single()
+
+    if (error) return { success: false, data: null, error: error.message }
+    return { success: true, data: data as UserData, error: '' }
+  }
+
+  return { user, userData, viewedUserData, isLoggedIn, signUpUser, logInUser, logOutUser, viewUserDataById }
 })

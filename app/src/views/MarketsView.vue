@@ -1,5 +1,4 @@
 <template>
-  <MarketsGallery />
 </template>
 
 <script lang="ts" setup>
