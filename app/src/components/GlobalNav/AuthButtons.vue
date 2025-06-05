@@ -16,8 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue'
-
 defineEmits<{
   (e: 'requestLogin'): void
   (e: 'requestSignup'): void

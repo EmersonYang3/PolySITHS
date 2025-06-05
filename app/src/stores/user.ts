@@ -10,11 +10,11 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
   const userData = ref<UserData | null>(null)
+  
   const viewedUserData = ref<UserData | null>(null)
   const isLoggedIn = ref(false)
 
   let userDataChannel: RealtimeChannel | null = null
-  const router = useRouter()
 
   async function signUpUser(email: string, password: string) {
     const { error } = await supabase.auth.signUp({ email, password })

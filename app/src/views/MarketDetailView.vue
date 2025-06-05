@@ -3,7 +3,7 @@
 <script lang="ts" setup>
 import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMarketStore } from '@/stores/market'
+import { useMarketStore } from '@/stores/prediction'
 
 const route = useRoute()
 const marketStore = useMarketStore()
