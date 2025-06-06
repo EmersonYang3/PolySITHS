@@ -9,6 +9,13 @@ export interface UserData {
   created_at:               Timestamptz;   
 }
 
+export interface UserBalanceHistory {
+  history_id: string;
+  user_id:    string;   
+  balance:    number;
+  created_at: Timestamptz;    
+}
+
 export interface Market {
   market_id:   string;
   title:       string;

@@ -26,6 +26,15 @@
           </button>
           <button
             type="button"
+            @click="navigateToLeaderboards"
+            class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
+            role="menuitem"
+          >
+            <Trophy class="h-4 w-4" />
+            Leaderboards
+          </button>
+          <button
+            type="button"
             @click="navigateToMarkets"
             class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-black hover:text-purple-light cursor-pointer transition-colors"
             role="menuitem"
@@ -53,7 +62,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { BarChart3, LogOut, User } from 'lucide-vue-next'
+import { BarChart3, LogOut, User, Trophy } from 'lucide-vue-next'
 
 import BrandButton from './BrandButton.vue'
 import AuthButtons from './AuthButtons.vue'
@@ -75,6 +84,10 @@ function navigateToLogin() {
 
 function navigateToSignup() {
   router.push({ name: 'signup' })
+}
+
+function navigateToLeaderboards() {
+  router.push({ name: 'leaderboards' })
 }
 
 function navigateToMarkets() {

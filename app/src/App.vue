@@ -63,7 +63,7 @@ watch(
   () => route.fullPath,
   () => {
     nextTick().then(updateHeight)
-  }
+  },
 )
 
 onMounted(() => {

@@ -1,5 +1,7 @@
+// Store for basic user data and authentication
+// DOES NOT STORE predictions OR history, only user data like username, and profile url, etc.
+
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { defineStore } from 'pinia'
 import { supabase } from '@/lib/supabaseClient'
 
@@ -9,11 +11,10 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
-  const userData = ref<UserData | null>(null)
-  
-  const viewedUserData = ref<UserData | null>(null)
   const isLoggedIn = ref(false)
+  const userData = ref<UserData | null>(null)
 
+  const viewedUserData = ref<UserData | null>(null)
   let userDataChannel: RealtimeChannel | null = null
 
   async function signUpUser(email: string, password: string) {
@@ -23,7 +24,8 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function logInUser(email: string, password: string) {
-    const { data: logInData, error: logInError } = await supabase.auth.signInWithPassword({ email, password })
+    const { data: logInData, error: logInError } =
+      await supabase.auth.signInWithPassword({ email, password })
 
     if (logInError || !logInData.user) {
       return { success: false, error: logInError?.message || 'Login failed' }
@@ -39,14 +41,18 @@ export const useUserStore = defineStore('user', () => {
 
     userDataChannel = supabase
       .channel(`public:user_data:user_id=eq.${user.value.id}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'user_data',
-        filter: `user_id=eq.${user.value.id}`,
-      }, (payload) => {
-        userData.value = payload.new as UserData
-      })
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'user_data',
+          filter: `user_id=eq.${user.value.id}`,
+        },
+        (payload) => {
+          userData.value = payload.new as UserData
+        }
+      )
       .subscribe()
 
     return { success: true, error: '' }
@@ -59,6 +65,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const { error } = await supabase.auth.signOut()
+
     if (error) return { success: false, error: error.message }
 
     user.value = null
@@ -75,15 +82,11 @@ export const useUserStore = defineStore('user', () => {
     if (success) {
       viewedUserData.value = data
     }
-    
+
     return { success, error }
   }
 
-  async function getUserDataById(userId: string): Promise<{
-    success: boolean
-    data: UserData | null
-    error: string
-  }> {
+  async function getUserDataById(userId: string): Promise<{success: boolean; data: UserData | null; error: string}> {
     const { data, error } = await supabase
       .from('user_data')
       .select('*')
@@ -91,8 +94,30 @@ export const useUserStore = defineStore('user', () => {
       .single()
 
     if (error) return { success: false, data: null, error: error.message }
+
     return { success: true, data: data as UserData, error: '' }
   }
 
-  return { user, userData, viewedUserData, isLoggedIn, signUpUser, logInUser, logOutUser, viewUserDataById }
+  async function updateUserProfile(newDisplayName: string, newProfileUrl: string) {
+    const { error } = await supabase.rpc('update_user_profile', {
+      p_display_name: newDisplayName,
+      p_profile_url: newProfileUrl,
+    })
+
+    if (error) return { success: false, error: error.message }
+
+    if (userData.value && userData.value.user_id) {
+      await viewUserDataById(userData.value.user_id)
+
+      userData.value = {
+        ...(userData.value as UserData),
+        display_name: newDisplayName,
+        profile_url: newProfileUrl,
+      }
+    }
+
+    return { success: true, error: '' }
+  }
+
+  return { user, userData, viewedUserData, isLoggedIn, signUpUser, logInUser, logOutUser, viewUserDataById, updateUserProfile }
 })

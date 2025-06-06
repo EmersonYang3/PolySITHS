@@ -1,6 +1,3 @@
-<template>
-</template>
+<template></template>
 
-<script lang="ts" setup>
-import MarketsGallery from '@/components/MarketsGallery.vue'
-</script>
+<script lang="ts" setup></script>
