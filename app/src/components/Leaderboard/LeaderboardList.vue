@@ -7,7 +7,7 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold flex items-center gap-2 text-text-primary">
           <Trophy :class="['w-5 h-5', headerIconColor]" />
-          Top Players
+          Top Users
         </h2>
         <div class="flex items-center gap-4">
           <div class="text-sm text-text-secondary">Sorted by {{ headerLabel }}</div>
