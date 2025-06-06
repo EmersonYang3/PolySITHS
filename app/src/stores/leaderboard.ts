@@ -8,6 +8,22 @@ export const useLeaderBoardStore = defineStore("leaderboard", () => {
   const wagerLeaderboard = ref<Array<Prediction & {user_data: Pick<UserData, "user_id" | "display_name" | "profile_url">;}>>([]);
   const winLeaderboard = ref<Array<Prediction & {user_data: Pick<UserData, "user_id" | "display_name" | "profile_url">;}>>([]);
   const lossLeaderboard = ref<Array<Prediction & {user_data: Pick<UserData, "user_id" | "display_name" | "profile_url">;}>>([]);
+  const balanceLeaderboard = ref<Array<Pick<UserData, "user_id" | "display_name" | "profile_url" | "balance">>>([]);
+
+  async function loadBalanceLeaderboard() {
+    const { data, error } = await supabase
+      .from("user_data")
+      .select("user_id, display_name, profile_url, balance")
+      .order("balance", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error("Failed to load balance leaderboard:", error);
+      return;
+    }
+
+    balanceLeaderboard.value = data as typeof balanceLeaderboard.value;
+  }
 
   async function loadWagerLeaderboard() {
     const { data, error } = await supabase
@@ -38,7 +54,7 @@ export const useLeaderBoardStore = defineStore("leaderboard", () => {
           profile_url
         )
       `)
-      .not("win", "is", null)
+      .gt("win", 0) 
       .order("win", { ascending: false })
       .limit(50);
 
@@ -56,12 +72,12 @@ export const useLeaderBoardStore = defineStore("leaderboard", () => {
           profile_url
         )
       `)
-      .not("win", "is", null)
+      .lt("win", 0) 
       .order("win", { ascending: true })
       .limit(50);
 
     lossLeaderboard.value = data as typeof lossLeaderboard.value;
   }
 
-  return { wagerLeaderboard, winLeaderboard, lossLeaderboard, loadWagerLeaderboard, loadWinLeaderboard, loadLossLeaderboard };
+  return { wagerLeaderboard, winLeaderboard, lossLeaderboard, loadWagerLeaderboard, loadWinLeaderboard, loadLossLeaderboard, loadBalanceLeaderboard, balanceLeaderboard };
 });

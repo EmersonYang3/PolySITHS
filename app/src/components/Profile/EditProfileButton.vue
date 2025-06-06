@@ -43,7 +43,7 @@
       >
         <div
           v-if="openDialog"
-          class="bg-black border border-border rounded-xl w-full max-w-md p-6 relative"
+          class="bg-pure-black border border-border rounded-xl w-full max-w-md p-6 relative"
         >
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-text-primary">Edit Profile</h2>
@@ -87,7 +87,7 @@
                   v-model="profileUrl"
                   type="url"
                   placeholder="https://example.com/your-image.jpg"
-                  class="bg-off-black border-border text-text-primary focus:border-purple focus:ring-purple w-full rounded px-3 py-2 focus:outline-none"
+                  class="bg-off-black border-border text-text-primary focus:border-purple focus:ring focus:ring-purple w-full rounded px-3 py-2 focus:outline-none"
                 />
               </div>
             </div>
@@ -99,7 +99,7 @@
                 v-model="displayName"
                 type="text"
                 placeholder="Enter your display name"
-                class="bg-off-black border-border text-text-primary focus:border-purple focus:ring-purple w-full rounded px-3 py-2 focus:outline-none"
+                class="bg-off-black border-border text-text-primary focus:border-purple focus:ring focus:ring-purple w-full rounded px-3 py-2 focus:outline-none"
               />
             </div>
 
@@ -129,7 +129,7 @@
 
               <button
                 type="submit"
-                class="bg-purple hover:bg-purple-dark text-white px-3 py-1 rounded-md text-sm cursor-pointer"
+                class="bg-purple hover:bg-purple-dark text-pure-white px-3 py-1 rounded-md text-sm cursor-pointer"
               >
                 Save Changes
               </button>

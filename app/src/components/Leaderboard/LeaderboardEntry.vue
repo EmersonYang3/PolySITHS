@@ -6,38 +6,32 @@
     ]"
   >
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <!-- Rank Badge -->
+      <div class="flex items-center gap-4 cursor-pointer" @click="goToProfile">
         <div :class="rankBadgeClass">
           <span class="text-sm font-semibold">{{ index + 1 }}</span>
         </div>
 
-        <!-- Avatar or Initial -->
         <div :class="['w-10 h-10 rounded-full flex items-center justify-center', avatarBgClass]">
-          <template v-if="entry.user_data.profile_url">
+          <template v-if="user.profile_url">
             <img
-              :src="entry.user_data.profile_url"
+              :src="user.profile_url"
               alt="avatar"
               class="w-full h-full object-cover rounded-full"
             />
           </template>
           <template v-else>
             <span class="text-sm font-bold text-pure-white">
-              {{ entry.user_data.display_name.charAt(0).toUpperCase() }}
+              {{ user.display_name.charAt(0).toUpperCase() }}
             </span>
           </template>
         </div>
 
-        <!-- Username + ID -->
         <div>
-          <div class="font-medium text-text-primary">{{ entry.user_data.display_name }}</div>
-          <div class="text-sm text-text-secondary">
-            Player #{{ entry.user_data.user_id.slice(0, 8) }}
-          </div>
+          <div class="font-medium text-text-primary">{{ user.display_name }}</div>
+          <div class="text-sm text-text-secondary">Player #{{ user.user_id }}</div>
         </div>
       </div>
 
-      <!-- Stat & Trophy -->
       <div class="flex items-center gap-8">
         <div class="text-right">
           <div class="text-sm text-text-secondary mb-1">
@@ -57,6 +51,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { Trophy } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -64,21 +59,30 @@ const props = defineProps({
   index: Number,
   sortBy: {
     type: String,
-    validator: (val) => ['wager', 'win', 'loss'].includes(val),
+    validator: (val) => ['wager', 'win', 'loss', 'balance'].includes(val),
   },
 })
 
+// Determine if entry is a Prediction with nested user_data or a UserData object directly
+const user = computed(() => {
+  return props.sortBy === 'balance' ? props.entry : props.entry.user_data
+})
+
+const router = useRouter()
+
+function goToProfile() {
+  router.push({ name: 'profile', params: { id: user.value.user_id } })
+}
+
 const statValue = computed(() => {
   if (props.sortBy === 'wager') return props.entry.wager
-  return props.entry.win ?? 0
+  if (props.sortBy === 'win') return props.entry.win ?? 0
+  if (props.sortBy === 'loss') return props.entry.win ?? 0
+  return user.value.balance ?? 0
 })
 
 const statLabel = computed(() => {
-  return props.sortBy === 'wager'
-    ? 'Biggest Wager'
-    : props.sortBy === 'win'
-      ? 'Biggest Win'
-      : 'Biggest Loss'
+  return props.sortBy.charAt(0).toUpperCase() + props.sortBy.slice(1)
 })
 
 const formatCurrency = (amount) =>
@@ -102,19 +106,22 @@ const rankBadgeClass = computed(() => {
   if (props.index === 1)
     return `${base} bg-text-secondary/20 text-text-secondary border-text-secondary`
   if (props.index === 2) return `${base} bg-warning-dark/20 text-warning-dark border-warning-dark`
-  return `${base} bg-border-light text-text-secondary border-border`
+  return `${base} bg-border-light/40 text-text-secondary border-border`
 })
 
 const avatarBgClass = computed(() => {
-  if (props.sortBy === 'wager') return 'bg-purple'
-  if (props.sortBy === 'win') return 'bg-success'
-  return 'bg-error'
+  if (props.sortBy === 'wager') return 'bg-gradient-to-br from-purple to-purple-dark'
+  if (props.sortBy === 'win') return 'bg-gradient-to-br from-success to-success-dark'
+  if (props.sortBy === 'loss') return 'bg-gradient-to-br from-error to-error-dark'
+
+  return 'bg-gradient-to-br from-yellow-300 to-yellow-500'
 })
 
 const statValueClass = computed(() => {
   if (props.sortBy === 'win') return 'text-success'
   if (props.sortBy === 'loss') return 'text-error'
-  return 'text-purple'
+  if (props.sortBy === 'balance') return 'text-yellow-300'
+  return 'text-purple-light'
 })
 
 const trophyClass = computed(() => {
