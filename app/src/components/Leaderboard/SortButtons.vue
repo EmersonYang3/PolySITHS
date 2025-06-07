@@ -5,7 +5,7 @@
       class="flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 cursor-pointer"
       :class="
         sortBy === 'wager'
-          ? 'bg-purple-600 text-white border-2 border-purple-400'
+          ? 'bg-purple-600 text-white border border-purple-400'
           : 'bg-black text-gray-300 border border-purple-900 hover:border-purple-700 hover:text-white'
       "
     >
@@ -20,7 +20,7 @@
       class="flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 cursor-pointer"
       :class="
         sortBy === 'win'
-          ? 'bg-green-700 text-white border-2 border-green-500'
+          ? 'bg-green-700 text-white border border-green-500'
           : 'bg-black text-gray-300 border border-green-900 hover:border-green-700 hover:text-white'
       "
     >
@@ -33,7 +33,7 @@
       class="flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 cursor-pointer"
       :class="
         sortBy === 'loss'
-          ? 'bg-red-700 text-white border-2 border-red-500'
+          ? 'bg-red-700 text-white border border-red-500'
           : 'bg-black text-gray-300 border border-red-900 hover:border-red-700 hover:text-white'
       "
     >
@@ -46,7 +46,7 @@
       class="flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 cursor-pointer"
       :class="
         sortBy === 'balance'
-          ? 'bg-yellow-500 text-white border-2 border-yellow-300'
+          ? 'bg-yellow-500 text-white border border-yellow-300'
           : 'bg-black text-gray-300 border border-amber-700 hover:border-amber-300hover:text-white'
       "
     >
