@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import EditProfileButton from './EditProfileButton.vue'
 
-import { defineProps, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { formatDate, formatBalance } from '@/utils/formatters'
 

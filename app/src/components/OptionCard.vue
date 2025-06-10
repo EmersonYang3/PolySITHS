@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineEmits } from 'vue'
 import type { OptionStats } from '@/utils/Types'
 
 const props = defineProps<{ option: OptionStats; selected: boolean }>()
