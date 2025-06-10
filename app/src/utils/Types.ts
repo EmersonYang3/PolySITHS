@@ -26,6 +26,15 @@ export interface Market {
   created_at:  Timestamptz
 }
 
+export interface MarketOptionVolumeHistory {
+  market_history_id: string;
+  market_id: string;
+  option_id: string;
+  total_volume: number;
+  created_at: Timestamptz
+}
+
+
 export interface Option {
   option_id:  string;     
   market_id:  string;      
@@ -40,4 +49,25 @@ export interface Prediction {
   wager:         number;       
   win:           number | null;  
   created_at:    Timestamptz;  
+}
+
+export interface OptionStats {
+  id: string
+  name: string
+  percentage: number
+  shares: number
+  volume: number
+}
+
+export interface MarketWithStats {
+  market_id: string
+  title: string
+  question: string
+  creator_id: string
+  resolver_id: string
+  end_time: string
+  total_volume: number
+  total_shares: number
+  options: OptionStats[]
+  created_at: Timestamptz
 }

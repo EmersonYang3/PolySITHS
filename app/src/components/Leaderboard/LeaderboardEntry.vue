@@ -6,7 +6,7 @@
     ]"
   >
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4 cursor-pointer" @click="goToProfile">
+      <div class="flex items-center gap-4 cursor-pointer" @click="onClickProfile">
         <div :class="rankBadgeClass">
           <span class="text-sm font-semibold">{{ index + 1 }}</span>
         </div>
@@ -49,29 +49,25 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+<script setup lang="ts">
+import { computed, defineEmits } from 'vue'
 import { Trophy } from 'lucide-vue-next'
 
-const props = defineProps({
-  entry: Object,
-  index: Number,
-  sortBy: {
-    type: String,
-    validator: (val) => ['wager', 'win', 'loss', 'balance'].includes(val),
-  },
-})
+const props = defineProps<{
+  entry: any
+  index: number
+  sortBy: 'wager' | 'win' | 'loss' | 'balance'
+}>()
 
-// Determine if entry is a Prediction with nested user_data or a UserData object directly
-const user = computed(() => {
-  return props.sortBy === 'balance' ? props.entry : props.entry.user_data
-})
+const emit = defineEmits<{
+  (e: 'visitProfile', userId: string): void
+}>()
 
-const router = useRouter()
+// pick user object
+const user = computed(() => (props.sortBy === 'balance' ? props.entry : props.entry.user_data))
 
-function goToProfile() {
-  router.push({ name: 'profile', params: { id: user.value.user_id } })
+function onClickProfile() {
+  emit('visitProfile', user.value.user_id)
 }
 
 const statValue = computed(() => {
@@ -81,11 +77,9 @@ const statValue = computed(() => {
   return user.value.balance ?? 0
 })
 
-const statLabel = computed(() => {
-  return props.sortBy.charAt(0).toUpperCase() + props.sortBy.slice(1)
-})
+const statLabel = computed(() => props.sortBy.charAt(0).toUpperCase() + props.sortBy.slice(1))
 
-const formatCurrency = (amount) =>
+const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -113,7 +107,6 @@ const avatarBgClass = computed(() => {
   if (props.sortBy === 'wager') return 'bg-gradient-to-br from-purple to-purple-dark'
   if (props.sortBy === 'win') return 'bg-gradient-to-br from-success to-success-dark'
   if (props.sortBy === 'loss') return 'bg-gradient-to-br from-error to-error-dark'
-
   return 'bg-gradient-to-br from-yellow-300 to-yellow-500'
 })
 

@@ -12,7 +12,7 @@
         <div class="flex items-center gap-4">
           <div class="text-sm text-text-secondary">Sorted by {{ headerLabel }}</div>
           <button
-            @click="$emit('refresh')"
+            @click="emitRefresh"
             :disabled="loading"
             class="flex items-center justify-center w-8 h-8 rounded-full bg-border hover:bg-border-light transition-colors duration-200 text-text-secondary hover:text-text-primary disabled:opacity-50"
           >
@@ -23,41 +23,45 @@
       </div>
     </div>
 
-    <div>
-      <template v-if="entries && entries.length">
-        <div class="divide-y divide-border">
-          <LeaderboardEntry
-            v-for="(entry, idx) in entries"
-            :key="entry.prediction_id || entry.id || entry.user_id"
-            :entry="entry"
-            :index="idx"
-            :sort-by="sortBy"
-          />
-        </div>
-      </template>
-      <template v-else>
-        <div class="py-6 text-center text-text-secondary">no users available</div>
-      </template>
+    <div v-if="entries && entries.length" class="divide-y divide-border">
+      <LeaderboardEntry
+        v-for="(entry, idx) in entries"
+        :key="entry.prediction_id || entry.id || entry.user_id"
+        :entry="entry"
+        :index="idx"
+        :sort-by="sortBy"
+        @visit-profile="onVisitProfile"
+      />
     </div>
+    <div v-else class="py-6 text-center text-text-secondary">no users available</div>
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
+<script setup lang="ts">
+import { defineEmits, defineProps, computed } from 'vue'
 import LeaderboardEntry from './LeaderboardEntry.vue'
 import { Trophy, RefreshCw } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 
-const props = defineProps({
-  entries: Array,
-  sortBy: {
-    type: String,
-    validator: (val) => ['wager', 'win', 'loss', 'balance'].includes(val),
-    required: true,
-  },
-  loading: Boolean,
-})
+const props = defineProps<{
+  entries: any[]
+  sortBy: 'wager' | 'win' | 'loss' | 'balance'
+  loading: boolean
+}>()
 
-defineEmits(['refresh'])
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
+
+const router = useRouter()
+
+function emitRefresh() {
+  emit('refresh')
+}
+
+function onVisitProfile(userId: string) {
+  router.push({ name: 'profile', params: { id: userId } })
+}
 
 const headerIconColor = computed(() => {
   if (props.sortBy === 'wager') return 'text-purple-light'
@@ -67,13 +71,16 @@ const headerIconColor = computed(() => {
 })
 
 const headerLabel = computed(() => {
-  return props.sortBy === 'wager'
-    ? 'Biggest Wager'
-    : props.sortBy === 'win'
-      ? 'Biggest Win'
-      : props.sortBy === 'loss'
-        ? 'Biggest Loss'
-        : 'Highest Balance'
+  switch (props.sortBy) {
+    case 'wager':
+      return 'Biggest Wager'
+    case 'win':
+      return 'Biggest Win'
+    case 'loss':
+      return 'Biggest Loss'
+    default:
+      return 'Highest Balance'
+  }
 })
 </script>
 
@@ -86,7 +93,6 @@ const headerLabel = computed(() => {
     transform: rotate(360deg);
   }
 }
-
 .animate-spin {
   animation: spin 1s linear infinite;
 }

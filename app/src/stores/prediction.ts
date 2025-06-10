@@ -53,5 +53,11 @@ export const usePredictionStore = defineStore('prediction', () => {
         return { success: true, error: '' }
     }
 
-    return { biggest_wager, biggest_win, biggest_loss, loadPredictionExtremes }
+    async function placePrediction(market_id: string, option_id: string, wager: number) {
+        const { data: predictionData, error: predictionError} = await supabase.rpc('place_prediction', {p_market_id: market_id, p_option_id: option_id, p_wager: wager})
+
+        console.log(predictionData, predictionError)
+    }
+
+    return { biggest_wager, biggest_win, biggest_loss, loadPredictionExtremes, placePrediction }
 })

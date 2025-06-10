@@ -10,6 +10,7 @@ export const useLeaderBoardStore = defineStore("leaderboard", () => {
   const lossLeaderboard = ref<Array<Prediction & {user_data: Pick<UserData, "user_id" | "display_name" | "profile_url">;}>>([]);
   const balanceLeaderboard = ref<Array<Pick<UserData, "user_id" | "display_name" | "profile_url" | "balance">>>([]);
 
+  // Offload to a rpc later.
   async function loadBalanceLeaderboard() {
     const { data, error } = await supabase
       .from("user_data")
