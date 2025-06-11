@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, onUnmounted, computed, defineEmits } from 'vue'
+import { reactive, onMounted, onUnmounted, computed } from 'vue'
 import type { MarketWithStats } from '@/utils/Types'
 import {
   ClockIcon,

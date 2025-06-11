@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import LeaderboardEntry from './LeaderboardEntry.vue'
 import { Trophy, RefreshCw } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'

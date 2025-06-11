@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineEmits } from 'vue'
+import { computed } from 'vue'
 import { Trophy } from 'lucide-vue-next'
 
 const props = defineProps<{
