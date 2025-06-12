@@ -5,7 +5,7 @@
     <div class="relative">
       <img
         :src="viewingUserData?.profile_url"
-        :alt="viewingUserData?.display_name"
+        alt="User Profile Picture"
         class="w-24 h-24 rounded-full border-2 border-purple object-cover"
       />
     </div>
@@ -23,16 +23,16 @@
       <div class="mt-4 flex flex-col md:flex-row gap-4 md:gap-8">
         <div>
           <p class="text-text-secondary text-sm">Balance</p>
-          <p class="text-xl font-bold text-text-primary">
+          <h2 class="text-xl font-bold text-text-primary">
             ${{ formatBalance(viewingUserData?.balance || 0) }}
-          </p>
+          </h2>
         </div>
 
         <div>
           <p class="text-text-secondary text-sm">Member Since</p>
-          <p class="text-xl font-bold text-text-primary">
+          <h2 class="text-xl font-bold text-text-primary">
             {{ formatDate(viewingUserData?.created_at) }}
-          </p>
+          </h2>
         </div>
       </div>
     </div>

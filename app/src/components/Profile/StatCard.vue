@@ -8,7 +8,7 @@
     </div>
 
     <template v-if="value !== null && value !== undefined">
-      <p :class="['text-2xl font-bold', statusColorClass]">$ {{ formattedValue }}</p>
+      <h2 :class="['text-2xl font-bold', statusColorClass]">$ {{ formattedValue }}</h2>
       <p v-if="date" class="text-text-secondary text-sm mt-2">
         {{ formattedDate }}
       </p>

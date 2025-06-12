@@ -3,9 +3,9 @@
     class="bg-off-black border border-border-light rounded-lg p-3 w-full hover:border-purple transition-colors h-fit"
   >
     <div class="mb-3 h-12">
-      <h3 class="text-white font-semibold text-sm mb-1 line-clamp-2 leading-tight">
+      <h2 class="text-white font-semibold text-sm mb-1 line-clamp-2 leading-tight">
         {{ market.title }}
-      </h3>
+      </h2>
       <p class="text-gray-400 text-xs line-clamp-1">{{ market.question }}</p>
     </div>
 
@@ -31,7 +31,7 @@
                   :style="{ width: option.percentage + '%' }"
                 />
               </div>
-              <span class="text-purple text-xs font-bold min-w-[32px]"
+              <span class="text-green-400 text-xs font-bold min-w-[32px]"
                 >{{ option.percentage.toFixed(1) }}%</span
               >
             </div>

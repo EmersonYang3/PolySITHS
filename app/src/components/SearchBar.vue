@@ -1,5 +1,6 @@
 <template>
   <div class="relative w-full max-w-2xl">
+    <label for="search-input" class="sr-only">Search</label>
     <div
       class="relative flex items-center bg-off-black border border-border rounded-xl overflow-hidden transition-all duration-200 ease-in-out"
       :class="{
@@ -12,6 +13,7 @@
       </div>
 
       <input
+        id="search-input"
         type="text"
         placeholder="Twin search something up twin..."
         v-model="searchText"
