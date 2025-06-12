@@ -17,7 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import Fuse, { FuseResult } from 'fuse.js'
+import Fuse from 'fuse.js'
+import type { FuseResult } from 'fuse.js'
 import type { MarketWithStats } from '../utils/Types'
 
 import { computed, ref } from 'vue'
