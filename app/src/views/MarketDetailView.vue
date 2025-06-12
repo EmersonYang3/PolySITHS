@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="flex-[1] w-full lg:max-w-sm flex-shrink-0">
+      <div class="flex-[2] w-full lg:max-w-sm flex-shrink-0">
         <div
           class="bg-off-black border border-border-light shadow-lg rounded-lg overflow-hidden sticky top-4"
         >
@@ -20,7 +20,7 @@
               <BarChart3 class="h-5 w-5 text-white" />
             </div>
             <div class="flex-1 min-w-0">
-              <h2 class="text-xl font-semibold text-text-primary w-full">
+              <h2 class="text-xl font-semibold text-text-primary">
                 {{ market.title }}
               </h2>
               <p class="text-text-secondary text-sm mt-1 line-clamp-2">

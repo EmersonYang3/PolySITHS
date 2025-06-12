@@ -18,7 +18,7 @@ export async function authGuard(
   }
 
   if (to.meta.requiresGuest && logged) {
-    return next({ name: 'dashboard' })
+    return next({ name: 'markets' })
   }
 
   return next()

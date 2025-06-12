@@ -1,5 +1,5 @@
 <template>
-  <MarketGallery />
+  <MarketGallery/>
 </template>
 
 <script setup lang="ts">
