@@ -4,6 +4,10 @@
       <SearchBar v-model:searchQuery="searchQuery" />
     </div>
 
+    <div v-if="filteredMarkets.length === 0" class="text-center text-gray-500 mb-8">
+      No markets available
+    </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
       <MarketCard
         v-for="market in filteredMarkets"
