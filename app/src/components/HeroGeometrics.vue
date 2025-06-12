@@ -212,11 +212,3 @@ onUnmounted(() => {
   })
 })
 </script>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
-.font-pacifico {
-  font-family: 'Pacifico', cursive;
-}
-</style>
