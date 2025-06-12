@@ -75,14 +75,14 @@
         type="submit"
         :disabled="!isFormValid || isLoading"
         :class="{ 'opacity-70': isLoading }"
-        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 w-full rounded bg-purple py-3 text-sm font-medium text-white transition-all enabled:active:scale-95 hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         <span v-if="isLoading">Signing up...</span>
         <span v-else>Sign Up</span>
       </button>
 
       <p v-if="isSuccess" class="text-center mt-1 text-sm text-success">
-        Please check your inbox to confirm your account.
+        Logging in... Please wait!
       </p>
       <p v-if="errorMessage" class="text-center mt-1 text-sm text-error">{{ errorMessage }}</p>
     </form>
@@ -100,7 +100,9 @@
 import { ref, computed } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const email = ref('')
@@ -130,6 +132,11 @@ const onSubmit = async () => {
 
   if (data.success) {
     isSuccess.value = true
+    const data = await userStore.logInUser(email.value, password.value)
+
+    if (data.success) {
+      router.push('/markets')
+    }
   } else {
     errorMessage.value = data.error
   }
