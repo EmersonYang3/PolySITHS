@@ -46,14 +46,14 @@
 
         <div ref="buttonsRef" class="flex flex-wrap justify-center gap-4 opacity-0">
           <button
-            class="login-button relative bg-[#8B5CF6] px-6 py-3 text-base rounded-lg transition-all hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
+            class="login-button relative bg-[#8B5CF6] px-6 py-2 text-base rounded-lg transition-all hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
             @click="routeToLogin"
           >
             <span>Log in</span>
           </button>
 
           <button
-            class="leave-button relative px-6 py-3 text-base rounded-lg transition-all border-2 border-[#8B5CF6] text-[#8B5CF6] hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
+            class="leave-button relative px-6 py-2 text-base rounded-lg transition-all border-2 border-[#8B5CF6] text-[#8B5CF6] hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
             @click="routeToSignUp"
           >
             <span>Sign up</span>
