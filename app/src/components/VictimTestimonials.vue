@@ -34,7 +34,7 @@
                       <div class="flex mb-4">
                         <div v-for="i in 5" :key="i" class="text-lg">
                           <span
-                            :class="i <= testimonial.rating ? 'text-[#8B5CF6]' : 'text-gray-600'"
+                            :class="i <= testimonial.rating ? 'text-[#10B981]' : 'text-gray-600'"
                             >★</span
                           >
                         </div>
@@ -47,6 +47,7 @@
                       <img
                         class="w-10 h-10 rounded-full bg-[#8B5CF6]/30 flex items-center justify-center text-white mr-3 text-lg"
                         :src="testimonial.profile"
+                        :alt="'Profile picture for' + testimonial.name"
                       />
                       <div class="text-left">
                         <p class="text-white font-medium">{{ testimonial.name }}</p>

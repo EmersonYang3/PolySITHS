@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="relative z-10 container mx-auto px-4 md:px-6 overflow-visible pr-[500px]">
+    <div class="relative z-10 container mx-auto px-4 md:px-6">
       <div class="max-w-5xl mx-auto text-center">
         <h1
           ref="titleRef"
@@ -46,7 +46,7 @@
 
         <div ref="buttonsRef" class="flex flex-wrap justify-center gap-4 opacity-0">
           <button
-            class="login-button relative bg-[#8B5CF6] text-white px-6 py-3 text-base rounded-lg transition-all hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
+            class="login-button relative bg-[#8B5CF6] px-6 py-3 text-base rounded-lg transition-all hover:scale-[1.05] active:scale-[0.95] cursor-pointer"
             @click="routeToLogin"
           >
             <span>Log in</span>
