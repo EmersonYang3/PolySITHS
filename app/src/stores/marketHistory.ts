@@ -46,6 +46,13 @@ export const useMarketHistoryStore = defineStore('marketHistory', () => {
     return dict;
   });
 
+  function clearAll() {
+    history.value = []
+    options.value = {}
+    loading.value = false
+    error.value = null
+  }
+
   return {
     history,
     options,
@@ -53,5 +60,6 @@ export const useMarketHistoryStore = defineStore('marketHistory', () => {
     error,
     loadMarketOptionsHistory,
     byOption,
+    clearAll
   };
 });

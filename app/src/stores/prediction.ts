@@ -59,5 +59,11 @@ export const usePredictionStore = defineStore('prediction', () => {
         console.log(predictionData, predictionError)
     }
 
-    return { biggest_wager, biggest_win, biggest_loss, loadPredictionExtremes, placePrediction }
+    function flushAll() {
+        biggest_wager.value = null
+        biggest_win.value = null
+        biggest_loss.value = null
+    }
+
+    return { biggest_wager, biggest_win, biggest_loss, loadPredictionExtremes, placePrediction, flushAll }
 })

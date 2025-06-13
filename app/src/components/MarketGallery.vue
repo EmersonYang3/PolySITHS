@@ -25,9 +25,10 @@ import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
 import type { MarketWithStats } from '../utils/Types'
 
-import { computed, ref } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import { useMarketStore } from '@/stores/market'
 import { useRouter } from 'vue-router'
+
 import SearchBar from '@/components/SearchBar.vue'
 import MarketCard from '@/components/MarketCard.vue'
 
@@ -59,4 +60,8 @@ function visitMarket(marketId: string) {
 }
 
 marketStore.fetchMarketsWithStats()
+
+onUnmounted(() => {
+  marketStore.flushAll()
+})
 </script>

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useLeaderBoardStore } from '@/stores/leaderboard'
 import SortButtons from '@/components/Leaderboard/SortButtons.vue'
 import LeaderboardList from '@/components/Leaderboard/LeaderboardList.vue'
@@ -82,5 +82,9 @@ async function refreshData() {
 
 onMounted(() => {
   loadAllLeaderboards()
+})
+
+onUnmounted(() => {
+  store.clearAll()
 })
 </script>

@@ -80,5 +80,13 @@ export const useLeaderBoardStore = defineStore("leaderboard", () => {
     lossLeaderboard.value = data as typeof lossLeaderboard.value;
   }
 
-  return { wagerLeaderboard, winLeaderboard, lossLeaderboard, loadWagerLeaderboard, loadWinLeaderboard, loadLossLeaderboard, loadBalanceLeaderboard, balanceLeaderboard };
+  function clearAll() {
+    wagerLeaderboard.value = []
+    winLeaderboard.value = []
+    lossLeaderboard.value = []
+    balanceLeaderboard.value = []
+  }
+
+
+  return { wagerLeaderboard, winLeaderboard, lossLeaderboard, loadWagerLeaderboard, loadWinLeaderboard, loadLossLeaderboard, loadBalanceLeaderboard, balanceLeaderboard, clearAll };
 });

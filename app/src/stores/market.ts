@@ -57,5 +57,9 @@ export const useMarketStore = defineStore('market', () => {
     }
   }
 
-  return { marketList, fetchMarketsWithStats, fetchMarketById }
+  function flushAll() {
+    marketList.value = []
+  }
+
+  return { marketList, fetchMarketsWithStats, fetchMarketById, flushAll }
 })

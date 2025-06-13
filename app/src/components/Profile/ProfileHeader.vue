@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import EditProfileButton from './EditProfileButton.vue'
 
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { formatDate, formatBalance } from '@/utils/formatters'
 
@@ -55,5 +55,9 @@ const isOwnProfile = computed(() => userStore.userData?.user_id === props.userId
 
 onMounted(() => {
   userStore.viewUserDataById(props.userId)
+})
+
+onUnmounted(() => {
+  userStore.flushViewUser()
 })
 </script>

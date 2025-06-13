@@ -119,5 +119,9 @@ export const useUserStore = defineStore('user', () => {
     return { success: true, error: '' }
   }
 
-  return { user, userData, viewedUserData, isLoggedIn, signUpUser, logInUser, logOutUser, viewUserDataById, updateUserProfile }
+  function flushViewUser() {
+    viewedUserData.value = null
+  }
+
+  return { user, userData, viewedUserData, isLoggedIn, signUpUser, logInUser, logOutUser, viewUserDataById, updateUserProfile, flushViewUser }
 })

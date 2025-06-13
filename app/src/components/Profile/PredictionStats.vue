@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePredictionStore } from '@/stores/prediction'
 
 import StatCard from './StatCard.vue'
@@ -35,6 +35,10 @@ const loaded = ref(false)
 onMounted(async () => {
   await store.loadPredictionExtremes(props.userId)
   loaded.value = true
+})
+
+onUnmounted(() => {
+  store.flushAll()
 })
 
 const biggestWager = computed(() => (loaded.value ? (store.biggest_wager?.wager ?? null) : null))
